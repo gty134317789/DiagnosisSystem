@@ -19,7 +19,7 @@
         getData() {
           var that = this;
           // 对应 Python 提供的接口，这里的地址填写下面服务器运行的地址，本地则为127.0.0.1，外网则为 your_ip_address
-          const path = 'http://127.0.0.1:5000/getMsg';
+          const path = 'http://127.0.0.1:5001/getMsg';
           axios.get(path).then(function (response) {
             // 这里服务器返回的 response 为一个 json object，可通过如下方法需要转成 json 字符串
             // 可以直接通过 response.data 取key-value

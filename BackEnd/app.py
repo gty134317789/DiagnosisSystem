@@ -5,7 +5,17 @@ from flask import redirect
 from flask_cors import CORS
 import pymysql
 import traceback
+import os
+# 涉及的相关依赖引用
+#上传文件所需的依赖
+from wtforms import Form,FileField
+from flask_wtf.file import FileRequired,FileAllowed
+from werkzeug.utils import secure_filename
+from werkzeug.datastructures import CombinedMultiDict
 
+# 表单提交相关校验
+class fileForm(Form):
+    file = FileField(validators=[FileRequired(), FileAllowed(['mat'])])
 
 def after_request(response):
     response.headers['Access-Control-Allow-Origin'] = request.headers.get(
@@ -25,6 +35,7 @@ cors = CORS(app, resources={r"/getMsg": {"origins": "*"}})
 
 @app.route('/')
 def hello_world():
+    print(111)
     return 'Hello World!'
 
 @app.route('/getMsg', methods=['GET', 'POST'])
@@ -143,6 +154,7 @@ def showDataset():
         # 执行sql语句
         cursor.execute(sql)
         results = cursor.fetchall()
+
         print('result是',results)
         list=[]
         for row in results:
@@ -160,8 +172,83 @@ def showDataset():
     db.close()
     return
 
+#更改数据集选中状态
+@app.route('/updataDataset',methods=['GET','POST'])
+def updateDataset():
+    db = pymysql.connect(host="localhost", user="root", password="root", database="geerwheel", charset="utf8")
+    cur=db.cursor()
+    status=request.get_data(as_text=True)
+    print('status 如下')
+    print(status)
+    if(status=='1'):
+        sql="UPDATE dataset SET ischoosed='否' WHERE id=2"
+    else:
+        sql = "UPDATE dataset SET ischoosed='是' WHERE id=2"
+    print(sql)
+    cur.execute(sql)
+    db.commit()
+    cur.close()
+    db.close()
+    return '更改成功'
 
+#添加数据集
+@app.route('/uploadDataset',methods=['GET','POST'])
+def uploadDataset():
+    db = pymysql.connect(host="localhost", user="root", password="root", database="geerwheel", charset="utf8")
+    cursor = db.cursor()
+    data=request.get_json()
+    print('data是')
+    print(data)
+
+    id = data.get('id')
+    name = data.get('name')
+    region = data.get('region')
+    contact = data.get('contact')
+    description = data.get('description')
+    ischoosed = data.get('ischoosed')
+    # SQL 插入语句
+    sql_0 = "INSERT INTO dataset(id,name,region,contact,description,ischoosed) VALUES (%s,%s,%s,%s,%s,%s)"
+    sql = sql_0 % (repr(id), repr(name), repr(region),  repr(contact),repr(description),repr(ischoosed))
+    try:
+        # 执行sql语句
+        cursor.execute(sql)
+        # 提交到数据库执行
+        db.commit()
+        return '添加成功'
+    except:
+        # 抛出错误信息
+        traceback.print_exc()
+        # 如果发生错误则回滚
+        db.rollback()
+        return '添加失败'
+    # 关闭数据库连接
+    db.close()
+
+
+#上传文件
+@app.route("/uploadDatafile", methods=['POST'])
+def uploadDatafile():
+    # 初始化返回对象
+    resp_success = format.resp_format_success
+    resp_failed = format.resp_format_failed
+
+    file_form = fileForm(CombinedMultiDict([request.form, request.files]))
+    if file_form.validate():
+        # 获取项目路径+保存文件夹，组成服务保存绝对路径
+        save_path = os.path.join(os.path.abspath(os.path.dirname(__file__)).split('TPMService')[0], 'TPMService/static')
+        # 通过表单提交的form-data获取选择上传的文件
+        attfile = request.files.get('file')
+        # 进行安全名称检查处理
+        file_name = secure_filename(attfile.filename)
+        # 保存文件文件中
+        attfile.save(os.path.join(save_path, file_name))
+
+        resp_success['data'] = {"fileName": file_name}
+        return resp_success
+    else:
+        resp_failed['message'] = '文件格式不符合预期'
+        return resp_failed
 # 启动运行
 if __name__ == '__main__':
-    app.run()   # 这样子会直接运行在本地服务器，也即是 localhost:5000
+    app.run(host='127.0.0.1', port=5001)  # 这样子会直接运行在本地服务器，也即是 localhost:5000
    # app.run(host='your_ip_address') # 这里可通过 host 指定在公网IP上运行

@@ -40,9 +40,9 @@
       fixed="right"
       label="操作"
       width="100">
-      <template slot-scope="scope">
-         <el-button type="primary" @click="choose('tableData.ischoosed')">选中</el-button>
-      </template>
+
+          <el-button type="primary" @click="choose()">选中</el-button>
+
     </el-table-column>
     </el-table>
   </div>
@@ -51,7 +51,9 @@
 
 <script>
 import axios from "axios";
-const path = 'http://127.0.0.1:5000/showDataset';
+const path = 'http://127.0.0.1:5001/showDataset';
+const updatepath = 'http://127.0.0.1:5001/updataDataset';
+
 export default {
   name: "ExistedData",
   created() {
@@ -64,15 +66,41 @@ export default {
   },
   data(){
     return{
+      status:'1',
       tableData:'' ,
-      choosed:false
     }
   },
   methods:{
     choose(){
-       const that = this;
-      that.choosed=!that.choosed;
-      console.log(that.choosed)
+      const that=this;
+      console.log('当前status是：'+that.status)
+      if(that.status=='1')
+      {
+        axios.post(updatepath,that.status).then(function (resp){
+        console.log(resp.data)
+      })
+        that.status='0'
+        // console.log('已更改为否')
+         that.$alert('操作成功', '', {
+                                    confirmButtonText: '确定',
+                                    callback: action => {
+                                        that.$router.push('/existeddata')
+                                    }
+                                })
+      }
+      else{
+        axios.post(updatepath,that.status).then(function (resp){
+        console.log(resp.data)
+      })
+        that.status='1'
+        // console.log('已更改为是')
+                 that.$alert('操作成功', '', {
+                                    confirmButtonText: '确定',
+                                    callback: action => {
+                                        that.$router.push('/existeddata')
+                                    }
+                                })
+      }
     }
   }
 

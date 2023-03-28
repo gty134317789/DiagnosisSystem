@@ -10,7 +10,7 @@
         <el-menu router>
 
           <el-submenu :index=String(0)>
-            <template slot="title"><i class="el-icon-s-home"></i>数据预处理</template>
+            <template slot="title"><i class="el-icon-s-home"></i>数据集管理</template>
 
             <el-menu-item index="/existeddata">
               <div style="position: relative;left: 20px;">
@@ -20,41 +20,26 @@
 
             <el-menu-item index="/UploadData">
               <div style="position: relative;left: 20px;">
-                <i class="el-icon-upload2"></i>上传数据集
-              </div>
-            </el-menu-item>
-          </el-submenu>
-
-          <el-submenu :index=String(1)>
-            <template slot="title"><i class="el-icon-s-tools"></i>生产项目管理</template>
-            <el-menu-item index="/productmanager">
-              <div style="position: relative;left: 20px;">
-                <i class="el-icon-s-data"></i>现有生产信息
-              </div>
-            </el-menu-item>
-
-            <el-menu-item index="/addproduction">
-              <div style="position: relative;left: 20px;">
-                <i class="el-icon-circle-plus"></i>添加生产项目
+                <i class="el-icon-upload"></i>上传数据集
               </div>
             </el-menu-item>
           </el-submenu>
 
 
-          <el-submenu :index=String(2)>
-            <template slot="title"><i class="el-icon-user-solid"></i>用户管理</template>
-            <el-menu-item index="/usermanager">
-              <div style="position: relative;left: 20px;">
-                <i class="el-icon-s-data"></i>部门人员信息
-              </div>
-            </el-menu-item>
+          <el-menu-item :index=String(1)>
+        <i class="el-icon-view"></i>
+        <span slot="title">数据预处理</span>
+      </el-menu-item>
 
-              <el-menu-item index="/adduser">
-                <div style="position: relative;left: 20px;">
-                  <i class="el-icon-circle-plus"></i>添加用户
-                </div>
-              </el-menu-item>
-          </el-submenu>
+           <el-menu-item :index=String(2)>
+        <i class="el-icon-cpu"></i>
+        <span slot="title">训练模型</span>
+      </el-menu-item>
+
+             <el-menu-item :index=String(3)>
+        <i class="el-icon-document"></i>
+        <span slot="title">不同模型比较</span>
+      </el-menu-item>
 
           <el-menu-item index="/help">
             <div style="position: relative;left: 20px;">
