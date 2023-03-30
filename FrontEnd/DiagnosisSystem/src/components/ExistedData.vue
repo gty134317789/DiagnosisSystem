@@ -29,7 +29,7 @@
       <el-table-column
         prop="description"
         label="简介"
-        width="500">
+        width="490">
       </el-table-column>
       <el-table-column
         prop="ischoosed"

@@ -13,6 +13,9 @@ from flask_wtf.file import FileRequired,FileAllowed
 from werkzeug.utils import secure_filename
 from werkzeug.datastructures import CombinedMultiDict
 
+
+#全局变量
+save_path=''
 # 表单提交相关校验
 class fileForm(Form):
     file = FileField(validators=[FileRequired(), FileAllowed(['mat'])])
@@ -228,26 +231,74 @@ def uploadDataset():
 #上传文件
 @app.route("/uploadDatafile", methods=['POST'])
 def uploadDatafile():
+    # print(data)
     # 初始化返回对象
-    resp_success = format.resp_format_success
-    resp_failed = format.resp_format_failed
-
     file_form = fileForm(CombinedMultiDict([request.form, request.files]))
     if file_form.validate():
         # 获取项目路径+保存文件夹，组成服务保存绝对路径
-        save_path = os.path.join(os.path.abspath(os.path.dirname(__file__)).split('TPMService')[0], 'TPMService/static')
+
+        # save_path = os.path.join(os.path.abspath(os.path.dirname(__file__)).split('DiagnosisSystem')[0],
+        #                          'DiagnosisSystem/BackEnd/static/data')
+        # print('已保存')
         # 通过表单提交的form-data获取选择上传的文件
         attfile = request.files.get('file')
         # 进行安全名称检查处理
         file_name = secure_filename(attfile.filename)
         # 保存文件文件中
         attfile.save(os.path.join(save_path, file_name))
+        print('保存成功')
 
-        resp_success['data'] = {"fileName": file_name}
-        return resp_success
+        return jsonify({
+            "code": 200,
+            "message": "上传请求成功",
+            "fileName": file_name
+        })
     else:
-        resp_failed['message'] = '文件格式不符合预期'
-        return resp_failed
+        return jsonify({
+            "code": 400,
+            "message": "文件格式不符合预期"
+        }), 400
+# def makeDatadir(name):
+#     dir = os.path.dirname(__file__)
+#     if (os.path.exists('{}/{}'.format(dir,name)))==False:
+#         print('根目录不存在，创建根目录')
+#         finaldir=os.mkdir('{}/static/data/{}'.format(dir,name))
+#         print('创建成功')
+#         return finaldir
+#     else:
+#         return '创建失败'
+
+@app.route("/makeDatadir",methods=['GET','POST'])
+def makeDatadir():
+    # print(request.args)
+    # data = request.args.get('name')
+    data = request.get_json()['name']
+    print(data)
+    name = data
+    print(name)
+    dir = os.path.dirname(__file__)
+    print(dir)
+    if (os.path.exists('{}/static/data/{}'.format(dir,name)))==False:
+        print('根目录不存在，创建根目录')
+        os.mkdir('{}/static/data/{}'.format(dir, name))
+        global save_path
+        save_path=('{}/static/data/{}'.format(dir,name))
+        print(save_path)
+        print('创建成功')
+        return jsonify({
+                "code": 200,
+                "message": save_path
+            })
+    else:
+        return jsonify({
+                "code": 400,
+                "message": "路径已存在"
+            }), 400
+
+
+
+
+
 # 启动运行
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=5001)  # 这样子会直接运行在本地服务器，也即是 localhost:5000

@@ -44,6 +44,20 @@
             </el-form-item>
 
             <el-form-item>
+               <el-upload
+              :limit="1"
+              :file-list="fileList"
+              :auto-upload="true"
+              action="http://127.0.0.1:5001/uploadDatafile"
+              :before-upload="makedir"
+              :data="uploadData"
+        >
+          <el-button size="small" type="primary">点击上传</el-button>
+          <div slot="tip" class="el-upload__tip">只能上传mat文件，且不超过500M</div>
+        </el-upload>
+            </el-form-item>
+
+            <el-form-item>
                 <el-button type="primary" @click="submitForm('ruleForm')">添加</el-button>
                 <el-button @click="resetForm('ruleForm')">重置</el-button>
             </el-form-item>
@@ -54,10 +68,16 @@
 <script>
 import axios from "axios";
 const path = 'http://127.0.0.1:5001/uploadDataset';
+const pathfile = 'http://127.0.0.1:5001/uploadDatafile';
+const makdir='http://127.0.0.1:5001/makeDatadir';
+
+
     export default {
         name: "UploadData",
         data() {
             return {
+              fileList:[],
+              uploadData:{'name':''},
                 ruleForm: {
                     id: '',
                     name: '',
@@ -78,23 +98,43 @@ const path = 'http://127.0.0.1:5001/uploadDataset';
             };
         },
         methods: {
-            submitForm(formName) {
-                let that= this
+            submitForm() {
+              const that=this
               console.log(that.ruleForm)
                 axios.post(path,that.ruleForm).then(function (resp){
-                  console.log(resp.data())
-                if(resp.data)
-                  that.alert('上传成功','',{
-                    confirmButtonText:'确定',
-                    callback:action=>{
-                      that.$router.push('/existeddata')
-                }
-                  })
+                  console.log(resp.data)
+                  if(resp.data){
+                  that.$alert('操作成功', '', {
+                                    confirmButtonText: '确定',
+                                    callback: action => {
+                                        that.$router.push('/existeddata')
+                                    }
+                                });}
               })
+
             },
             resetForm(formName) {
-                this.$refs[formName].resetFields();
-            }
+                const that=this
+                that.$refs[formName].resetFields();
+            },
+            uploadFile(response,file){
+              const that=this;
+
+              name=that.ruleForm.name
+              console.log('输出名字')
+              console.log(name)
+              console.log('response是',response)
+          },
+            makedir(){
+              const that=this
+              console.log('已调用')
+              that.uploadData.name=that.ruleForm.name
+              axios.post(makdir,that.uploadData).then(function (resp){
+                console.log('成功')
+                console.log(that.ruleForm.name)
+                console.log(resp.data)
+              })
+          },
         }
     }
 </script>
