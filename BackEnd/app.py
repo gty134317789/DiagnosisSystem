@@ -1,14 +1,11 @@
-from flask import Flask
-from flask import jsonify
-from flask import request
-from flask import redirect
-from flask_cors import CORS
 import pymysql
 import traceback
 import os
-# 涉及的相关依赖引用
-#上传文件所需的依赖
 from wtforms import Form,FileField
+from flask import Flask
+from flask import jsonify
+from flask import request
+from flask_cors import CORS
 from flask_wtf.file import FileRequired,FileAllowed
 from werkzeug.utils import secure_filename
 from werkzeug.datastructures import CombinedMultiDict
@@ -16,6 +13,7 @@ from werkzeug.datastructures import CombinedMultiDict
 
 #全局变量
 save_path=''
+
 # 表单提交相关校验
 class fileForm(Form):
     file = FileField(validators=[FileRequired(), FileAllowed(['mat'])])
@@ -31,16 +29,18 @@ def after_request(response):
 
 
 
-
+#初始化flask实例
 app = Flask(__name__)
 app.after_request(after_request)
-cors = CORS(app, resources={r"/getMsg": {"origins": "*"}})
 
+cors = CORS(app, resources={r"/getMsg": {"origins": "*"}})
+#测试服务器连通
 @app.route('/')
 def hello_world():
     print(111)
     return 'Hello World!'
 
+#测试前后端可通信
 @app.route('/getMsg', methods=['GET', 'POST'])
 def home():
     response = {
@@ -71,8 +71,6 @@ def getRigistRequest():
     data=request.get_json()
     print(data)
 
-
-
     username=data.get('username')
     password=data.get('password')
     password2=data.get('password2')
@@ -80,11 +78,6 @@ def getRigistRequest():
     idcardnum=data.get('idcardnum')
 
 
-    print(username)
-    print(password)
-    print(password2)
-    print(truename)
-    print(idcardnum)
     #判断两次输入密码是否一致，一致则跳转到登录界面，不一致则弹出警告，要求用户重新输入
     if password==password2:
         # SQL 插入语句
@@ -149,10 +142,7 @@ def showDataset():
     # 使用cursor()方法获取操作游标
     cursor = db.cursor()
     sql="select * from dataset"
-    # post_data=request.get_json()
-    # print('传过来的参数是',post_data)
-    # pagesize=post_data.get('pagesize')
-    # page=post_data.get('page')
+
     try:
         # 执行sql语句
         cursor.execute(sql)
@@ -268,6 +258,7 @@ def uploadDatafile():
 #     else:
 #         return '创建失败'
 
+#创建数据集文件夹
 @app.route("/makeDatadir",methods=['GET','POST'])
 def makeDatadir():
     # print(request.args)

@@ -26,15 +26,11 @@
           </el-submenu>
 
 
-          <el-menu-item :index=String(1)>
-        <i class="el-icon-view"></i>
-        <span slot="title">数据预处理</span>
-      </el-menu-item>
-
-           <el-menu-item :index=String(2)>
+          <el-menu-item index="/train">
         <i class="el-icon-cpu"></i>
         <span slot="title">训练模型</span>
       </el-menu-item>
+
 
              <el-menu-item :index=String(3)>
         <i class="el-icon-document"></i>
