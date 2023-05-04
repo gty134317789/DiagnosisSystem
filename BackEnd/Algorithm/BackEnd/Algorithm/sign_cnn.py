@@ -22,12 +22,17 @@ def subtime(date1, date2):
     return date2 - date1
 
 
-num_classes = 10    # 样本类别
+
 length = 784        # 样本长度
-epochs=10           #迭代次数
-number = 500  # 每类样本的数量
-normal = True  # 是否标准化
+
+num_classes = 10    # 样本类别
+epochs=10           # 迭代次数
+number = 784        # 每类样本的数量
 rate = [0.8, 0.1, 0.1]  # 测试集验证集划分比例
+normal = True  # 是否标准化
+
+
+
 
 path = r'../../../static/data/1'
 x_train, y_train, x_valid, y_valid, x_test, y_test = ovs_preprocess.prepro(

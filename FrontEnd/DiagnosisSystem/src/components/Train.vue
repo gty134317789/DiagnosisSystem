@@ -1,64 +1,49 @@
 <template>
     <div style="margin-top: 60px;margin-left:80px;width: 600px" >
-        <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px" class="demo-ruleForm">
-            <el-form-item label="数据集id" prop="id"
-                          :rules="[
-    { required: true, message: '数据集id不能为空'},
-  ]">
-                <el-input v-model="ruleForm.id"></el-input>
+        <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px" >
+            <el-form-item label="样本类别数量" prop="num_classes"
+                          >
+                <el-input v-model.number="ruleForm.num_classes"></el-input>
             </el-form-item>
 
-            <el-form-item label="数据集名称" prop="name"
+            <el-form-item label="迭代次数" prop="epochs"
                           :rules="[
-    { required: true, message: '数据集名称不能为空'},
+    { required: true, message: '迭代次数不能为空'},
   ]">
-                <el-input v-model="ruleForm.name"></el-input>
+                <el-input v-model="ruleForm.epochs"></el-input>
             </el-form-item>
 
-            <el-form-item label="地区" prop="region"
+            <el-form-item label="每类样本数量" prop="number"
                           :rules="[
     { required: true, message: '地区不能为空'},
   ]">
-                <el-input v-model="ruleForm.region"></el-input>
+                <el-input v-model="ruleForm.number"></el-input>
             </el-form-item>
 
-            <el-form-item label="联系方式" prop="contact"
+            <el-form-item label="训练集比例" prop="train"
                           :rules="[
     { required: true, message: '联系方式不能为空'},
   ]">
-                <el-input v-model="ruleForm.contact"></el-input>
+                <el-input v-model="ruleForm.train"></el-input>
              </el-form-item>
 
-            <el-form-item label="简介" prop="description"
+            <el-form-item label="验证集比例" prop="valid"
                           :rules="[
     { required: true, message: '简介不能为空'},
   ]">
-                <el-input v-model="ruleForm.description"></el-input>
+                <el-input v-model="ruleForm.valid"></el-input>
             </el-form-item>
 
-            <el-form-item label="是否选中" prop="ischoosed"
+            <el-form-item label="测试集比例" prop="test"
                           :rules="[
     { required: true, message: '是否选中不能为空'},
   ]">
-                <el-input v-model="ruleForm.ischoosed"></el-input>
+                <el-input v-model="ruleForm.test"></el-input>
             </el-form-item>
 
-            <el-form-item>
-               <el-upload
-              :limit="1"
-              :file-list="fileList"
-              :auto-upload="true"
-              action="http://127.0.0.1:5001/uploadDatafile"
-              :before-upload="makedir"
-              :data="uploadData"
-        >
-          <el-button size="small" type="primary">点击上传</el-button>
-          <div slot="tip" class="el-upload__tip">只能上传mat文件，且不超过500M</div>
-        </el-upload>
-            </el-form-item>
 
             <el-form-item>
-                <el-button type="primary" @click="submitForm('ruleForm')">添加</el-button>
+                <el-button type="primary" @click="submitForm('ruleForm')">确定</el-button>
                 <el-button @click="resetForm('ruleForm')">重置</el-button>
             </el-form-item>
         </el-form>
@@ -73,28 +58,40 @@ const makdir='http://127.0.0.1:5001/makeDatadir';
 
 
     export default {
-        name: "UploadData",
+        name: "Train",
         data() {
+          var checkNum = (rule, value, callback) => {
+        if (!value) {
+          return callback(new Error('样本类别数量不能为空'));
+        }
+        setTimeout(() => {
+          if (!Number.isInteger(value)) {
+            callback(new Error('请输入数字值'));
+          } else {
+            if (value>11 || value<0) {
+              callback(new Error('样本类别数量必须在1-10'));
+            } else {
+              callback();
+            }
+          }
+        }, 1000);
+      };
             return {
               fileList:[],
-              uploadData:{'name':''},
                 ruleForm: {
-                    id: '',
-                    name: '',
-                    region: '',
-                    contact: '',
-                    description:'',
-                    ischoosed:''
+                    num_classes: '',
+                    epochs: '',
+                    number: '',
+                    train: '',
+                    valid:'',
+                    test:''
                 },
-                rules: {
-                  id: [
-                        { required: true, message: 'id不能为空', trigger: 'change' }
-                    ],
-                  name: [
-                        { required: true, message: '数据集名称不能为空', trigger: 'change' },
-                    ],
-
-                },
+              rules:{
+                num_classes:[
+                   { required: true, message: '样本类别数量不能为空'},
+                  { validator: checkNum, trigger: 'blur' }
+                ]
+              }
             };
         },
         methods: {
@@ -117,26 +114,12 @@ const makdir='http://127.0.0.1:5001/makeDatadir';
                 const that=this
                 that.$refs[formName].resetFields();
             },
-            uploadFile(response,file){
-              const that=this;
 
-              name=that.ruleForm.name
-              console.log('输出名字')
-              console.log(name)
-              console.log('response是',response)
-          },
-            makedir(){
-              const that=this
-              console.log('已调用')
-              that.uploadData.name=that.ruleForm.name
-              axios.post(makdir,that.uploadData).then(function (resp){
-                console.log('成功')
-                console.log(that.ruleForm.name)
-                console.log(resp.data)
-              })
-          },
+
         }
-    }
+
+}
+
 </script>
 
 <style scoped>

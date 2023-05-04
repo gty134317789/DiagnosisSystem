@@ -18,6 +18,7 @@ save_path=''
 class fileForm(Form):
     file = FileField(validators=[FileRequired(), FileAllowed(['mat'])])
 
+#接口鉴权
 def after_request(response):
     response.headers['Access-Control-Allow-Origin'] = request.headers.get(
         'Origin') or 'http://127.0.0.1:5000' or 'http://localhost:8080/'
