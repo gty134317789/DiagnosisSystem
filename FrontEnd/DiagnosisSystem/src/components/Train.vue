@@ -40,12 +40,12 @@
 <script>
 import axios from "axios";
 const path = 'http://127.0.0.1:5001/uploadDataset';
-const pathfile = 'http://127.0.0.1:5001/uploadDatafile';
-const makdir='http://127.0.0.1:5001/makeDatadir';
+const train = 'http://127.0.0.1:5001/train';
+
 
 
     export default {
-        name: "Train",
+        name: "train",
         data() {
           //验证样本数量
           var checkNum = (rule, value, callback) => {
@@ -143,7 +143,7 @@ const makdir='http://127.0.0.1:5001/makeDatadir';
             submitForm() {
               const that=this
               console.log(that.ruleForm)
-                axios.post(path,that.ruleForm).then(function (resp){
+                axios.post(train,that.ruleForm).then(function (resp){
                   console.log(resp.data)
                   if(resp.data){
                   that.$alert('操作成功', '', {
@@ -151,7 +151,7 @@ const makdir='http://127.0.0.1:5001/makeDatadir';
                                     callback: action => {
                                         that.$router.push('/existeddata')
                                     }
-                                });}
+                  });}
               })
 
             },

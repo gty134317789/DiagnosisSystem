@@ -1,6 +1,6 @@
+# -*- coding: gbk -*-
 from time import sleep
 from tensorflow import keras
-import ovs_preprocess
 from sklearn.metrics import confusion_matrix
 import matplotlib.pyplot as plt
 import random
@@ -10,10 +10,10 @@ from datetime import datetime
 import numpy as np
 import tensorflow as tf
 from sklearn.manifold import TSNE
+from BackEnd.Algorithm.BackEnd.Algorithm import ovs_preprocess
 
 
-
-#å¦‚æœæ˜¯GPUï¼Œéœ€è¦å»æ‰æ³¨é‡Šï¼Œå¦‚æœæ˜¯CPUï¼Œåˆ™æ³¨é‡Š
+#Èç¹ûÊÇGPU£¬ĞèÒªÈ¥µô×¢ÊÍ£¬Èç¹ûÊÇCPU£¬Ôò×¢ÊÍ
 # gpu = tf.config.experimental.list_physical_devices(device_type='GPU')
 # assert len(gpu) == 1
 # tf.config.experimental.set_memory_growth(gpu[0], True)
@@ -22,79 +22,94 @@ def subtime(date1, date2):
     return date2 - date1
 
 
+length = 784        # Ñù±¾³¤¶È
 
-length = 784        # æ ·æœ¬é•¿åº¦
+# num_classes = 5    # Ñù±¾Àà±ğ
+# epochs=10           # µü´ú´ÎÊı
+# number = 784        # Ã¿ÀàÑù±¾µÄÊıÁ¿
+# rate = [0.8, 0.1, 0.1]  # ²âÊÔ¼¯ÑéÖ¤¼¯»®·Ö±ÈÀı
+# normal = True  # ÊÇ·ñ±ê×¼»¯
 
-num_classes = 10    # æ ·æœ¬ç±»åˆ«
-epochs=10           # è¿­ä»£æ¬¡æ•°
-number = 784        # æ¯ç±»æ ·æœ¬çš„æ•°é‡
-rate = [0.8, 0.1, 0.1]  # æµ‹è¯•é›†éªŒè¯é›†åˆ’åˆ†æ¯”ä¾‹
-normal = True  # æ˜¯å¦æ ‡å‡†åŒ–
-
-
-
+num_classes = 10    # Ñù±¾Àà±ğ
+epochs = 10           # µü´ú´ÎÊı
+number = 784        # Ã¿ÀàÑù±¾µÄÊıÁ¿
+rate = [0.8, 0.1, 0.1]  # ²âÊÔ¼¯ÑéÖ¤¼¯»®·Ö±ÈÀı
+normal = True  # ÊÇ·ñ±ê×¼»¯
 
 path = r'../../../static/data/1'
-x_train, y_train, x_valid, y_valid, x_test, y_test = ovs_preprocess.prepro(
-    d_path=path,
-    length=length,
-    number=number,
-    normal=normal,
-    rate=rate,
-    enc=False, enc_step=28)
 
-x_train = np.array(x_train)
-y_train = np.array(y_train)
-x_valid = np.array(x_valid)
-y_valid = np.array(y_valid)
-x_test = np.array(x_test)
-y_test = np.array(y_test)
+x_train=[]
+y_train=[]
+x_valid=[]
+y_valid=[]
+x_test=[]
+y_test=[]
+history=''
+model=''
 
+def main_Algoithm():
+    global x_train,y_train,x_valid,y_valid,x_test,y_test
+    x_train, y_train, x_valid, y_valid, x_test, y_test = ovs_preprocess.prepro(
+        d_path=path,
+        length=length,
+        number=number,
+        normal=normal,
+        rate=rate,
+        enc=False, enc_step=28)
 
-print(x_train.shape)
-print(x_valid.shape)
-print(x_test.shape)
-print(y_train.shape)
-print(y_valid.shape)
-print(y_test.shape)
-
-
-y_train = [int(i) for i in y_train]
-y_valid = [int(i) for i in y_valid]
-y_test = [int(i) for i in y_test]
-
-# æ‰“ä¹±é¡ºåº
-index = [i for i in range(len(x_train))]
-random.seed(1)
-random.shuffle(index)
-x_train = np.array(x_train)[index]
-y_train = np.array(y_train)[index]
-
-index1 = [i for i in range(len(x_valid))]
-random.shuffle(index1)
-x_valid = np.array(x_valid)[index1]
-y_valid = np.array(y_valid)[index1]
-
-index2 = [i for i in range(len(x_test))]
-random.shuffle(index2)
-x_test = np.array(x_test)[index2]
-y_test = np.array(y_test)[index2]
-
-print(x_train.shape)
-print(x_valid.shape)
-print(x_test.shape)
-print(y_train)
-print(y_valid)
-print(y_test)
-print("x_trainçš„æœ€å¤§å€¼å’Œæœ€å°å€¼ï¼š", x_train.max(), x_train.min())
-print("x_testçš„æœ€å¤§å€¼å’Œæœ€å°å€¼ï¼š", x_test.max(), x_test.min())
-
-x_train = tf.reshape(x_train, (len(x_train), 784, 1))
-x_valid = tf.reshape(x_valid, (len(x_valid), 784, 1))
-x_test = tf.reshape(x_test, (len(x_test), 784, 1))
+    x_train = np.array(x_train)
+    y_train = np.array(y_train)
+    x_valid = np.array(x_valid)
+    y_valid = np.array(y_valid)
+    x_test = np.array(x_test)
+    y_test = np.array(y_test)
 
 
-# ä¿å­˜æœ€ä½³æ¨¡å‹
+    print(x_train.shape)
+    print(x_valid.shape)
+    print(x_test.shape)
+    print(y_train.shape)
+    print(y_valid.shape)
+    print(y_test.shape)
+
+
+    y_train = [int(i) for i in y_train]
+    y_valid = [int(i) for i in y_valid]
+    y_test = [int(i) for i in y_test]
+
+    # ´òÂÒË³Ğò
+    index = [i for i in range(len(x_train))]
+    random.seed(1)
+    random.shuffle(index)
+    x_train = np.array(x_train)[index]
+    y_train = np.array(y_train)[index]
+
+    index1 = [i for i in range(len(x_valid))]
+    random.shuffle(index1)
+    x_valid = np.array(x_valid)[index1]
+    y_valid = np.array(y_valid)[index1]
+
+    index2 = [i for i in range(len(x_test))]
+    random.shuffle(index2)
+    x_test = np.array(x_test)[index2]
+    y_test = np.array(y_test)[index2]
+
+    print(x_train.shape)
+    print(x_valid.shape)
+    print(x_test.shape)
+    print(y_train)
+    print(y_valid)
+    print(y_test)
+    print("x_trainµÄ×î´óÖµºÍ×îĞ¡Öµ£º", x_train.max(), x_train.min())
+    print("x_testµÄ×î´óÖµºÍ×îĞ¡Öµ£º", x_test.max(), x_test.min())
+
+    x_train = tf.reshape(x_train, (len(x_train), 784, 1))
+    x_valid = tf.reshape(x_valid, (len(x_valid), 784, 1))
+    x_test = tf.reshape(x_test, (len(x_test), 784, 1))
+
+
+
+# ±£´æ×î¼ÑÄ£ĞÍ
 class CustomModelCheckpoint(keras.callbacks.Callback):
     def __init__(self, model, path):
         self.model = model
@@ -108,9 +123,9 @@ class CustomModelCheckpoint(keras.callbacks.Callback):
             self.model.save_weights(self.path, overwrite=True)
             self.best_loss = val_loss
 
-# t-sneåˆå§‹å¯è§†åŒ–å‡½æ•°
+# t-sne³õÊ¼¿ÉÊÓ»¯º¯Êı
 def start_tsne():
-    print("æ­£åœ¨è¿›è¡Œåˆå§‹è¾“å…¥æ•°æ®çš„å¯è§†åŒ–...")
+    print("ÕıÔÚ½øĞĞ³õÊ¼ÊäÈëÊı¾İµÄ¿ÉÊÓ»¯...")
     x_train1 = tf.reshape(x_train, (len(x_train), 784))
     X_tsne = TSNE().fit_transform(x_train1)
     plt.figure(figsize=(10, 10))
@@ -119,10 +134,10 @@ def start_tsne():
     plt.savefig("./save_picture/sample.png",dpi=600)
     plt.show()
 
-start_tsne()
+
 # sleep(600000)
 
-# æ¨¡å‹å®šä¹‰
+# Ä£ĞÍ¶¨Òå
 def mymodel():
     inputs = keras.Input(shape=(x_train.shape[1], x_train.shape[2]))
     h1 = layers.Conv1D(filters=8, kernel_size=3, strides=1, padding='same', activation='relu')(inputs)
@@ -140,42 +155,45 @@ def mymodel():
     deep_model = keras.Model(inputs, h1, name="cnn")
     return deep_model
 
-model = mymodel()
 
-model.summary()
-startdate = datetime.utcnow()  # è·å–å½“å‰æ—¶é—´
+def modeltrain():
+    global model
+    model = mymodel()
 
-# ç¼–è¯‘æ¨¡å‹
-#ä½¿ç”¨äº¤å‰ç†µæŸå¤±å‡½æ•°
-model.compile(
-    optimizer=keras.optimizers.Adam(),
-    loss='sparse_categorical_crossentropy',
-    metrics=['accuracy'])
+    model.summary()
+    startdate = datetime.utcnow()  # »ñÈ¡µ±Ç°Ê±¼ä
 
-history = model.fit(x_train, y_train,
-                    batch_size=256, epochs=epochs, verbose=1,
-                    validation_data=(x_valid, y_valid),
-                    callbacks=[CustomModelCheckpoint(
-  model, r'best_sign_cnn.h5')])
+    # ±àÒëÄ£ĞÍ
+    #Ê¹ÓÃ½»²æìØËğÊ§º¯Êı
+    model.compile(
+        optimizer=keras.optimizers.Adam(),
+        loss='sparse_categorical_crossentropy',
+        metrics=['accuracy'])
+    global history
+    history = model.fit(x_train, y_train,
+                        batch_size=256, epochs=epochs, verbose=1,
+                        validation_data=(x_valid, y_valid),
+                        callbacks=[CustomModelCheckpoint(
+      model, r'best_sign_cnn.h5')])
 
-#åŠ è½½æ¨¡å‹
-# filepath = r'best_sign_cnn.h5'
-model.load_weights(filepath='best_sign_cnn.h5')
-# ç¼–è¯‘æ¨¡å‹
-model.compile(loss='sparse_categorical_crossentropy', optimizer=keras.optimizers.Adam(), metrics=['accuracy'])
-# è¯„ä¼°æ¨¡å‹
-scores = model.evaluate(x_test, y_test, verbose=1)
-print("è¯„ä¼°å®Œæˆ")
-print('%s: %.2f%%' % (model.metrics_names[1], scores[1] * 100))
+    #¼ÓÔØÄ£ĞÍ
+    # filepath = r'best_sign_cnn.h5'
+    model.load_weights(filepath='best_sign_cnn.h5')
+    # ±àÒëÄ£ĞÍ
+    model.compile(loss='sparse_categorical_crossentropy', optimizer=keras.optimizers.Adam(), metrics=['accuracy'])
+    # ÆÀ¹ÀÄ£ĞÍ
+    scores = model.evaluate(x_test, y_test, verbose=1)
+    print("ÆÀ¹ÀÍê³É")
+    print('%s: %.2f%%' % (model.metrics_names[1], scores[1] * 100))
 
-y_predict = model.predict(x_test)
-y_pred_int = np.argmax(y_predict, axis=1)
-print(y_pred_int[0:5])
-from sklearn.metrics import classification_report
-print(classification_report(y_test, y_pred_int, digits=4))
+    y_predict = model.predict(x_test)
+    y_pred_int = np.argmax(y_predict, axis=1)
+    print(y_pred_int[0:5])
+    from sklearn.metrics import classification_report
+    print(classification_report(y_test, y_pred_int, digits=4))
 
 def acc_line():
-    # ç»˜åˆ¶accå’Œlossæ›²çº¿
+    # »æÖÆaccºÍlossÇúÏß
     acc = history.history['accuracy']
     val_acc = history.history['val_accuracy']
     loss = history.history['loss']
@@ -183,7 +201,7 @@ def acc_line():
 
     epochs = range(len(acc))  # Get number of epochs
 
-    # ç”»accuracyæ›²çº¿
+    # »­accuracyÇúÏß
     plt.plot(epochs, acc, 'r', linestyle='-.')
     plt.plot(epochs, val_acc, 'b', linestyle='dashdot')
     plt.title('Training and validation accuracy')
@@ -193,7 +211,7 @@ def acc_line():
 
     plt.figure()
 
-    # ç”»lossæ›²çº¿
+    # »­lossÇúÏß
     plt.plot(epochs, loss, 'r', linestyle='-.')
     plt.plot(epochs, val_loss, 'b', linestyle='dashdot')
     plt.title('Training and validation loss')
@@ -204,10 +222,10 @@ def acc_line():
     plt.show()
 
 
-acc_line()
 
 
-# ç»˜åˆ¶æ··æ·†çŸ©é˜µ
+
+# »æÖÆ»ìÏı¾ØÕó
 def confusion():
     y_pred_gailv = model.predict(x_test, verbose=1)
     y_pred_int = np.argmax(y_pred_gailv, axis=1)
@@ -227,7 +245,7 @@ def confusion():
         for second_index in range(len(con_mat[first_index])):
             plt.text(first_index, second_index, con_mat[second_index][first_index], va='center', ha='center')
     plt.show()
-confusion()
+
 
 def new_start_tsne():
     # pca = PCA(n_components=10)
@@ -236,11 +254,11 @@ def new_start_tsne():
     pca_result = hidden_features
     tsne = TSNE(n_components=2, verbose=1)
     tsne_results = tsne.fit_transform(pca_result[:])
-    # -------------------------------å¯è§†åŒ–--------------------------------
-    # y_test_cat = np_utils.to_categorical(y_test[:2400], num_classes=10)# æ€»çš„ç±»åˆ«
+    # -------------------------------¿ÉÊÓ»¯--------------------------------
+    # y_test_cat = np_utils.to_categorical(y_test[:2400], num_classes=10)# ×ÜµÄÀà±ğ
     plt.figure(figsize=(5, 5))
     color_map = y_test[:]
-    for cl in range(num_classes):  # æ€»çš„ç±»åˆ«
+    for cl in range(num_classes):  # ×ÜµÄÀà±ğ
         indices = np.where(color_map == cl)
         indices = indices[0]
         plt.scatter(tsne_results[indices, 0], tsne_results[indices, 1], label=None)
@@ -250,4 +268,14 @@ def new_start_tsne():
     plt.savefig("./save_picture/result.png", dpi=600)
     plt.show()
 
-new_start_tsne()
+
+
+def run_Algorithm():
+    main_Algoithm()
+    start_tsne()
+    modeltrain()
+    acc_line()
+    confusion()
+    new_start_tsne()
+
+run_Algorithm()

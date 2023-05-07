@@ -1,3 +1,4 @@
+# -*- coding: gbk -*-
 import pymysql
 import traceback
 import os
@@ -11,14 +12,15 @@ from werkzeug.utils import secure_filename
 from werkzeug.datastructures import CombinedMultiDict
 
 
-#å…¨å±€å˜é‡
+
+#È«¾Ö±äÁ¿
 save_path=''
 
-# è¡¨å•æäº¤ç›¸å…³æ ¡éªŒ
+# ±íµ¥Ìá½»Ïà¹ØĞ£Ñé
 class fileForm(Form):
     file = FileField(validators=[FileRequired(), FileAllowed(['mat'])])
 
-#æ¥å£é‰´æƒ
+#½Ó¿Ú¼øÈ¨
 def after_request(response):
     response.headers['Access-Control-Allow-Origin'] = request.headers.get(
         'Origin') or 'http://127.0.0.1:5000' or 'http://localhost:8080/'
@@ -30,18 +32,18 @@ def after_request(response):
 
 
 
-#åˆå§‹åŒ–flaskå®ä¾‹
+#³õÊ¼»¯flaskÊµÀı
 app = Flask(__name__)
 app.after_request(after_request)
 
 cors = CORS(app, resources={r"/getMsg": {"origins": "*"}})
-#æµ‹è¯•æœåŠ¡å™¨è¿é€š
+#²âÊÔ·şÎñÆ÷Á¬Í¨
 @app.route('/')
 def hello_world():
     print(111)
     return 'Hello World!'
 
-#æµ‹è¯•å‰åç«¯å¯é€šä¿¡
+#²âÊÔÇ°ºó¶Ë¿ÉÍ¨ĞÅ
 @app.route('/getMsg', methods=['GET', 'POST'])
 def home():
     response = {
@@ -50,23 +52,23 @@ def home():
     return jsonify(response)
 
 
-#è·å–æ³¨å†Œè¯·æ±‚åŠå¤„ç†
+#»ñÈ¡×¢²áÇëÇó¼°´¦Àí
 @app.route('/register',methods=['GET','POST'])
 def getRigistRequest():
-    #è¿æ¥æ•°æ®åº“,æ­¤å‰åœ¨æ•°æ®åº“ä¸­åˆ›å»ºæ•°æ®åº“flask
+    #Á¬½ÓÊı¾İ¿â,´ËÇ°ÔÚÊı¾İ¿âÖĞ´´½¨Êı¾İ¿âflask
     db= pymysql.connect(
     user = 'root',
     password = 'root',
-    # MySQLçš„é»˜è®¤ç«¯å£ä¸º3306
+    # MySQLµÄÄ¬ÈÏ¶Ë¿ÚÎª3306
     port = 3306,
-    # æœ¬æœºåœ°å€ä¸º127.0.0.1æˆ–localhost
+    # ±¾»úµØÖ·Îª127.0.0.1»òlocalhost
     host = 'localhost',
-    # æŒ‡å®šä½¿ç”¨çš„æ•°æ®åº“
+    # Ö¸¶¨Ê¹ÓÃµÄÊı¾İ¿â
     database = 'geerwheel'
 )
 
-    print("è¿æ¥æˆåŠŸ")
-    #ä½¿ç”¨cursor()æ–¹æ³•è·å–æ“ä½œæ¸¸æ ‡
+    print("Á¬½Ó³É¹¦")
+    #Ê¹ÓÃcursor()·½·¨»ñÈ¡²Ù×÷ÓÎ±ê
     cursor = db.cursor()
 
     data=request.get_json()
@@ -79,119 +81,119 @@ def getRigistRequest():
     idcardnum=data.get('idcardnum')
 
 
-    #åˆ¤æ–­ä¸¤æ¬¡è¾“å…¥å¯†ç æ˜¯å¦ä¸€è‡´ï¼Œä¸€è‡´åˆ™è·³è½¬åˆ°ç™»å½•ç•Œé¢ï¼Œä¸ä¸€è‡´åˆ™å¼¹å‡ºè­¦å‘Šï¼Œè¦æ±‚ç”¨æˆ·é‡æ–°è¾“å…¥
+    #ÅĞ¶ÏÁ½´ÎÊäÈëÃÜÂëÊÇ·ñÒ»ÖÂ£¬Ò»ÖÂÔòÌø×ªµ½µÇÂ¼½çÃæ£¬²»Ò»ÖÂÔòµ¯³ö¾¯¸æ£¬ÒªÇóÓÃ»§ÖØĞÂÊäÈë
     if password==password2:
-        # SQL æ’å…¥è¯­å¥
+        # SQL ²åÈëÓï¾ä
         sql_0 = "INSERT INTO users(username, password,truename,idcardnum) VALUES (%s,%s,%s,%s)"
         sql = sql_0 % (repr(username), repr(password), repr(truename), repr(idcardnum))
         try:
-            # æ‰§è¡Œsqlè¯­å¥
+            # Ö´ĞĞsqlÓï¾ä
             cursor.execute(sql)
-            # æäº¤åˆ°æ•°æ®åº“æ‰§è¡Œ
+            # Ìá½»µ½Êı¾İ¿âÖ´ĞĞ
             db.commit()
-            return 'æ³¨å†ŒæˆåŠŸ'
+            return '×¢²á³É¹¦'
         except:
-            #æŠ›å‡ºé”™è¯¯ä¿¡æ¯
+            #Å×³ö´íÎóĞÅÏ¢
             traceback.print_exc()
-            # å¦‚æœå‘ç”Ÿé”™è¯¯åˆ™å›æ»š
+            # Èç¹û·¢Éú´íÎóÔò»Ø¹ö
             db.rollback()
-            return 'æ³¨å†Œå¤±è´¥'
-        # å…³é—­æ•°æ®åº“è¿æ¥
+            return '×¢²áÊ§°Ü'
+        # ¹Ø±ÕÊı¾İ¿âÁ¬½Ó
         db.close()
     else:
-        return 'æ³¨å†ŒæˆåŠŸ'
+        return '×¢²á³É¹¦'
 
-# è·å–ç™»å½•å‚æ•°åŠå¤„ç†
+# »ñÈ¡µÇÂ¼²ÎÊı¼°´¦Àí
 @app.route('/login',methods=['GET','POST'])
 def getLoginRequest():
-    # æŸ¥è¯¢ç”¨æˆ·ååŠå¯†ç æ˜¯å¦åŒ¹é…åŠå­˜åœ¨
-    # è¿æ¥æ•°æ®åº“,æ­¤å‰åœ¨æ•°æ®åº“ä¸­åˆ›å»ºæ•°æ®åº“TESTDB
+    # ²éÑ¯ÓÃ»§Ãû¼°ÃÜÂëÊÇ·ñÆ¥Åä¼°´æÔÚ
+    # Á¬½ÓÊı¾İ¿â,´ËÇ°ÔÚÊı¾İ¿âÖĞ´´½¨Êı¾İ¿âTESTDB
     db = pymysql.connect(host="localhost", user="root", password="root", database="geerwheel",charset="utf8")
-    # ä½¿ç”¨cursor()æ–¹æ³•è·å–æ“ä½œæ¸¸æ ‡
+    # Ê¹ÓÃcursor()·½·¨»ñÈ¡²Ù×÷ÓÎ±ê
     cursor = db.cursor()
 
     username = request.get_json().get('username')
     password = request.get_json().get('password')
-    # SQL æŸ¥è¯¢è¯­å¥
+    # SQL ²éÑ¯Óï¾ä
     sql_0 = "select * from users where username= %s and password= %s"
     sql = sql_0 % (repr(username),repr(password))
 
     try:
-        # æ‰§è¡Œsqlè¯­å¥
+        # Ö´ĞĞsqlÓï¾ä
         cursor.execute(sql)
         results = cursor.fetchall()
         # print(len(results))
         print(results)
         if len(results) == 1:
-            return 'ç™»å½•æˆåŠŸ'      #è¿”å›éœ€è¦è·³è½¬çš„é¡µé¢æˆ–éœ€è¦æ˜¾ç¤ºçš„å­—ç¬¦ä¸²
+            return 'µÇÂ¼³É¹¦'      #·µ»ØĞèÒªÌø×ªµÄÒ³Ãæ»òĞèÒªÏÔÊ¾µÄ×Ö·û´®
         else:
-            return 'ç”¨æˆ·åæˆ–å¯†ç ä¸æ­£ç¡®'
-        # æäº¤åˆ°æ•°æ®åº“æ‰§è¡Œ
+            return 'ÓÃ»§Ãû»òÃÜÂë²»ÕıÈ·'
+        # Ìá½»µ½Êı¾İ¿âÖ´ĞĞ
         db.commit()
     except:
-        # å¦‚æœå‘ç”Ÿé”™è¯¯åˆ™å›æ»š
+        # Èç¹û·¢Éú´íÎóÔò»Ø¹ö
         traceback.print_exc()
         db.rollback()
-    # å…³é—­æ•°æ®åº“è¿æ¥
+    # ¹Ø±ÕÊı¾İ¿âÁ¬½Ó
     db.close()
 
 
-#åˆ†é¡µæŸ¥è¯¢æ–¹æ³•
+#·ÖÒ³²éÑ¯·½·¨
 @app.route('/showDataset',methods=['GET','POST'])
 def showDataset():
     db = pymysql.connect(host="localhost", user="root", password="root", database="geerwheel", charset="utf8")
-    # ä½¿ç”¨cursor()æ–¹æ³•è·å–æ“ä½œæ¸¸æ ‡
+    # Ê¹ÓÃcursor()·½·¨»ñÈ¡²Ù×÷ÓÎ±ê
     cursor = db.cursor()
     sql="select * from dataset"
 
     try:
-        # æ‰§è¡Œsqlè¯­å¥
+        # Ö´ĞĞsqlÓï¾ä
         cursor.execute(sql)
         results = cursor.fetchall()
 
-        print('resultæ˜¯',results)
+        print('resultÊÇ',results)
         list=[]
         for row in results:
             dic={'id':row[0],'name':row[1],'region':row[2],'contact':row[3],'description':row[4],'ischoosed':row[5]}
             list.append(dic)
         print(list)
         return jsonify(list)
-        # æäº¤åˆ°æ•°æ®åº“æ‰§è¡Œ
+        # Ìá½»µ½Êı¾İ¿âÖ´ĞĞ
         db.commit()
     except:
-        # å¦‚æœå‘ç”Ÿé”™è¯¯åˆ™å›æ»š
+        # Èç¹û·¢Éú´íÎóÔò»Ø¹ö
         traceback.print_exc()
         db.rollback()
-        # å…³é—­æ•°æ®åº“è¿æ¥
+        # ¹Ø±ÕÊı¾İ¿âÁ¬½Ó
     db.close()
     return
 
-#æ›´æ”¹æ•°æ®é›†é€‰ä¸­çŠ¶æ€
+#¸ü¸ÄÊı¾İ¼¯Ñ¡ÖĞ×´Ì¬
 @app.route('/updataDataset',methods=['GET','POST'])
 def updateDataset():
     db = pymysql.connect(host="localhost", user="root", password="root", database="geerwheel", charset="utf8")
     cur=db.cursor()
     status=request.get_data(as_text=True)
-    print('status å¦‚ä¸‹')
+    print('status ÈçÏÂ')
     print(status)
     if(status=='1'):
-        sql="UPDATE dataset SET ischoosed='å¦' WHERE id=2"
+        sql="UPDATE dataset SET ischoosed='·ñ' WHERE id=2"
     else:
-        sql = "UPDATE dataset SET ischoosed='æ˜¯' WHERE id=2"
+        sql = "UPDATE dataset SET ischoosed='ÊÇ' WHERE id=2"
     print(sql)
     cur.execute(sql)
     db.commit()
     cur.close()
     db.close()
-    return 'æ›´æ”¹æˆåŠŸ'
+    return '¸ü¸Ä³É¹¦'
 
-#æ·»åŠ æ•°æ®é›†
+#Ìí¼ÓÊı¾İ¼¯
 @app.route('/uploadDataset',methods=['GET','POST'])
 def uploadDataset():
     db = pymysql.connect(host="localhost", user="root", password="root", database="geerwheel", charset="utf8")
     cursor = db.cursor()
     data=request.get_json()
-    print('dataæ˜¯')
+    print('dataÊÇ')
     print(data)
 
     id = data.get('id')
@@ -200,70 +202,59 @@ def uploadDataset():
     contact = data.get('contact')
     description = data.get('description')
     ischoosed = data.get('ischoosed')
-    # SQL æ’å…¥è¯­å¥
+    # SQL ²åÈëÓï¾ä
     sql_0 = "INSERT INTO dataset(id,name,region,contact,description,ischoosed) VALUES (%s,%s,%s,%s,%s,%s)"
     sql = sql_0 % (repr(id), repr(name), repr(region),  repr(contact),repr(description),repr(ischoosed))
     try:
-        # æ‰§è¡Œsqlè¯­å¥
+        # Ö´ĞĞsqlÓï¾ä
         cursor.execute(sql)
-        # æäº¤åˆ°æ•°æ®åº“æ‰§è¡Œ
+        # Ìá½»µ½Êı¾İ¿âÖ´ĞĞ
         db.commit()
-        return 'æ·»åŠ æˆåŠŸ'
+        return 'Ìí¼Ó³É¹¦'
     except:
-        # æŠ›å‡ºé”™è¯¯ä¿¡æ¯
+        # Å×³ö´íÎóĞÅÏ¢
         traceback.print_exc()
-        # å¦‚æœå‘ç”Ÿé”™è¯¯åˆ™å›æ»š
+        # Èç¹û·¢Éú´íÎóÔò»Ø¹ö
         db.rollback()
-        return 'æ·»åŠ å¤±è´¥'
-    # å…³é—­æ•°æ®åº“è¿æ¥
+        return 'Ìí¼ÓÊ§°Ü'
+    # ¹Ø±ÕÊı¾İ¿âÁ¬½Ó
     db.close()
 
 
-#ä¸Šä¼ æ–‡ä»¶
+#ÉÏ´«ÎÄ¼ş
 @app.route("/uploadDatafile", methods=['POST'])
 def uploadDatafile():
     # print(data)
-    # åˆå§‹åŒ–è¿”å›å¯¹è±¡
+    # ³õÊ¼»¯·µ»Ø¶ÔÏó
     file_form = fileForm(CombinedMultiDict([request.form, request.files]))
     if file_form.validate():
-        # è·å–é¡¹ç›®è·¯å¾„+ä¿å­˜æ–‡ä»¶å¤¹ï¼Œç»„æˆæœåŠ¡ä¿å­˜ç»å¯¹è·¯å¾„
-
+        # »ñÈ¡ÏîÄ¿Â·¾¶+±£´æÎÄ¼ş¼Ğ£¬×é³É·şÎñ±£´æ¾ø¶ÔÂ·¾¶
         # save_path = os.path.join(os.path.abspath(os.path.dirname(__file__)).split('DiagnosisSystem')[0],
         #                          'DiagnosisSystem/BackEnd/static/data')
-        # print('å·²ä¿å­˜')
-        # é€šè¿‡è¡¨å•æäº¤çš„form-dataè·å–é€‰æ‹©ä¸Šä¼ çš„æ–‡ä»¶
+        # print('ÒÑ±£´æ')
+        # Í¨¹ı±íµ¥Ìá½»µÄform-data»ñÈ¡Ñ¡ÔñÉÏ´«µÄÎÄ¼ş
         attfile = request.files.get('file')
-        # è¿›è¡Œå®‰å…¨åç§°æ£€æŸ¥å¤„ç†
+        # ½øĞĞ°²È«Ãû³Æ¼ì²é´¦Àí
         file_name = secure_filename(attfile.filename)
-        # ä¿å­˜æ–‡ä»¶æ–‡ä»¶ä¸­
+        # ±£´æÎÄ¼şÎÄ¼şÖĞ
         attfile.save(os.path.join(save_path, file_name))
-        print('ä¿å­˜æˆåŠŸ')
+        print('±£´æ³É¹¦')
 
         return jsonify({
             "code": 200,
-            "message": "ä¸Šä¼ è¯·æ±‚æˆåŠŸ",
+            "message": "ÉÏ´«ÇëÇó³É¹¦",
             "fileName": file_name
         })
     else:
         return jsonify({
             "code": 400,
-            "message": "æ–‡ä»¶æ ¼å¼ä¸ç¬¦åˆé¢„æœŸ"
+            "message": "ÎÄ¼ş¸ñÊ½²»·ûºÏÔ¤ÆÚ"
         }), 400
-# def makeDatadir(name):
-#     dir = os.path.dirname(__file__)
-#     if (os.path.exists('{}/{}'.format(dir,name)))==False:
-#         print('æ ¹ç›®å½•ä¸å­˜åœ¨ï¼Œåˆ›å»ºæ ¹ç›®å½•')
-#         finaldir=os.mkdir('{}/static/data/{}'.format(dir,name))
-#         print('åˆ›å»ºæˆåŠŸ')
-#         return finaldir
-#     else:
-#         return 'åˆ›å»ºå¤±è´¥'
 
-#åˆ›å»ºæ•°æ®é›†æ–‡ä»¶å¤¹
+
+#´´½¨Êı¾İ¼¯ÎÄ¼ş¼Ğ
 @app.route("/makeDatadir",methods=['GET','POST'])
 def makeDatadir():
-    # print(request.args)
-    # data = request.args.get('name')
     data = request.get_json()['name']
     print(data)
     name = data
@@ -271,12 +262,12 @@ def makeDatadir():
     dir = os.path.dirname(__file__)
     print(dir)
     if (os.path.exists('{}/static/data/{}'.format(dir,name)))==False:
-        print('æ ¹ç›®å½•ä¸å­˜åœ¨ï¼Œåˆ›å»ºæ ¹ç›®å½•')
+        print('¸ùÄ¿Â¼²»´æÔÚ£¬´´½¨¸ùÄ¿Â¼')
         os.mkdir('{}/static/data/{}'.format(dir, name))
         global save_path
         save_path=('{}/static/data/{}'.format(dir,name))
         print(save_path)
-        print('åˆ›å»ºæˆåŠŸ')
+        print('´´½¨³É¹¦')
         return jsonify({
                 "code": 200,
                 "message": save_path
@@ -284,14 +275,39 @@ def makeDatadir():
     else:
         return jsonify({
                 "code": 400,
-                "message": "è·¯å¾„å·²å­˜åœ¨"
+                "message": "Â·¾¶ÒÑ´æÔÚ"
             }), 400
 
+#µ÷ÓÃÑµÁ·º¯Êı
+@app.route("/train",methods=['GET','POST'])
+def train():
+    data = request.get_json()
+    print(data)
+    num_classes= request.get_json()['num_classes']
+    print(num_classes)
+
+    from BackEnd.Algorithm.BackEnd.Algorithm import sign_cnn
+    sign_cnn.num_classes =num_classes
+
+    # path="./Algorithm/BackEnd/Algorithm/sign_cnn.py"
+    # # ¶ÁÈ¡B½Å±¾ÄÚÈİ
+    # with open(path, "r",encoding='utf-8') as f:
+    #     content = f.read()
+    # # ĞŞ¸ÄB½Å±¾ÄÚÈİ
+    # content = content.replace("num_classes = 10", f"num_classes = {num_classes}")
+    # # ½«ĞŞ¸ÄºóµÄÄÚÈİĞ´»ØB½Å±¾
+    # with open(path, "w") as f:
+    #     f.write(content)
+
+    # sign_cnn.num_classes=
+    return jsonify({
+        "code": 200,
+        "message": "³É¹¦"
+    })
 
 
 
-
-# å¯åŠ¨è¿è¡Œ
+# Æô¶¯ÔËĞĞ
 if __name__ == '__main__':
-    app.run(host='127.0.0.1', port=5001)  # è¿™æ ·å­ä¼šç›´æ¥è¿è¡Œåœ¨æœ¬åœ°æœåŠ¡å™¨ï¼Œä¹Ÿå³æ˜¯ localhost:5000
-   # app.run(host='your_ip_address') # è¿™é‡Œå¯é€šè¿‡ host æŒ‡å®šåœ¨å…¬ç½‘IPä¸Šè¿è¡Œ
+    app.run(host='127.0.0.1', port=5001)  # ÕâÑù×Ó»áÖ±½ÓÔËĞĞÔÚ±¾µØ·şÎñÆ÷£¬Ò²¼´ÊÇ localhost:5000
+   # app.run(host='your_ip_address') # ÕâÀï¿ÉÍ¨¹ı host Ö¸¶¨ÔÚ¹«ÍøIPÉÏÔËĞĞ
