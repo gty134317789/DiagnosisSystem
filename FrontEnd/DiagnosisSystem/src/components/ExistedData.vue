@@ -41,7 +41,7 @@
       label="操作"
       width="100">
 
-          <el-button type="primary" @click="choose()">选中</el-button>
+          <el-button type="primary" @click="choose()">切换</el-button>
 
     </el-table-column>
     </el-table>

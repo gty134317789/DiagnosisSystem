@@ -74,7 +74,7 @@ const train = 'http://127.0.0.1:5001/train';
             if (!Number.isInteger(value)) {
               callback(new Error('请输入数字值'));
             } else {
-              if (value>200 || value<100) {
+              if (value>200 || value<9) {
                 callback(new Error('迭代次数需要在100-200次之间'));
               } else {
                 callback();
@@ -149,7 +149,7 @@ const train = 'http://127.0.0.1:5001/train';
                   that.$alert('操作成功', '', {
                                     confirmButtonText: '确定',
                                     callback: action => {
-                                        that.$router.push('/existeddata')
+
                                     }
                   });}
               })

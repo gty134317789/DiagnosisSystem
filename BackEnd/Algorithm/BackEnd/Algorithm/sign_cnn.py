@@ -36,7 +36,8 @@ number = 784        # 每类样本的数量
 rate = [0.8, 0.1, 0.1]  # 测试集验证集划分比例
 normal = True  # 是否标准化
 
-path = r'../../../static/data/1'
+# path = r'../../../static/data/1
+path=r'../BackEnd/static/data/1'
 
 x_train=[]
 y_train=[]
@@ -64,13 +65,13 @@ def main_Algoithm():
     x_test = np.array(x_test)
     y_test = np.array(y_test)
 
-
-    print(x_train.shape)
-    print(x_valid.shape)
-    print(x_test.shape)
-    print(y_train.shape)
-    print(y_valid.shape)
-    print(y_test.shape)
+    #
+    # print(x_train.shape)
+    # print(x_valid.shape)
+    # print(x_test.shape)
+    # print(y_train.shape)
+    # print(y_valid.shape)
+    # print(y_test.shape)
 
 
     y_train = [int(i) for i in y_train]
@@ -94,12 +95,15 @@ def main_Algoithm():
     x_test = np.array(x_test)[index2]
     y_test = np.array(y_test)[index2]
 
+    print('x_train的shape是：')
     print(x_train.shape)
+    print('x_valid的shape是：')
     print(x_valid.shape)
+    print('x_test的shape是：')
     print(x_test.shape)
-    print(y_train)
-    print(y_valid)
-    print(y_test)
+    print('y_train是：'+str(y_train))
+    print('y_valid是：'+str(y_valid))
+    print('y_test是：'+str(y_test))
     print("x_train的最大值和最小值：", x_train.max(), x_train.min())
     print("x_test的最大值和最小值：", x_test.max(), x_test.min())
 
@@ -131,7 +135,8 @@ def start_tsne():
     plt.figure(figsize=(10, 10))
     plt.scatter(X_tsne[:, 0], X_tsne[:, 1], c=y_train)
     plt.colorbar()
-    plt.savefig("./save_picture/sample.png",dpi=600)
+    # plt.savefig("./save_picture/sample.png",dpi=600)
+    plt.savefig("../BackEnd/Algorithm/BackEnd/Algorithm/save_picture/sample.png",dpi=600)
     plt.show()
 
 
@@ -265,7 +270,8 @@ def new_start_tsne():
         # plt.scatter(tsne_results[indices, 0], tsne_results[indices, 1], label=cl)
     plt.tick_params(labelsize=18)
     plt.legend()
-    plt.savefig("./save_picture/result.png", dpi=600)
+    # plt.savefig("./save_picture/result.png", dpi=600)
+    plt.savefig("../BackEnd/Algorithm/BackEnd/Algorithm/save_picture/result.png", dpi=600)
     plt.show()
 
 
@@ -278,4 +284,4 @@ def run_Algorithm():
     confusion()
     new_start_tsne()
 
-run_Algorithm()
+

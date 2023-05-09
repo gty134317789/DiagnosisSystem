@@ -2,25 +2,25 @@
 import pymysql
 import traceback
 import os
-from wtforms import Form,FileField
+from wtforms import Form, FileField
 from flask import Flask
 from flask import jsonify
 from flask import request
 from flask_cors import CORS
-from flask_wtf.file import FileRequired,FileAllowed
+from flask_wtf.file import FileRequired, FileAllowed
 from werkzeug.utils import secure_filename
 from werkzeug.datastructures import CombinedMultiDict
 
+# 全局变量
+save_path = ''
 
-
-#全局变量
-save_path=''
 
 # 表单提交相关校验
 class fileForm(Form):
     file = FileField(validators=[FileRequired(), FileAllowed(['mat'])])
 
-#接口鉴权
+
+# 接口鉴权
 def after_request(response):
     response.headers['Access-Control-Allow-Origin'] = request.headers.get(
         'Origin') or 'http://127.0.0.1:5000' or 'http://localhost:8080/'
@@ -31,19 +31,21 @@ def after_request(response):
     return response
 
 
-
-#初始化flask实例
+# 初始化flask实例
 app = Flask(__name__)
 app.after_request(after_request)
 
 cors = CORS(app, resources={r"/getMsg": {"origins": "*"}})
-#测试服务器连通
+
+
+# 测试服务器连通
 @app.route('/')
 def hello_world():
     print(111)
     return 'Hello World!'
 
-#测试前后端可通信
+
+# 测试前后端可通信
 @app.route('/getMsg', methods=['GET', 'POST'])
 def home():
     response = {
@@ -52,37 +54,36 @@ def home():
     return jsonify(response)
 
 
-#获取注册请求及处理
-@app.route('/register',methods=['GET','POST'])
+# 获取注册请求及处理
+@app.route('/register', methods=['GET', 'POST'])
 def getRigistRequest():
-    #连接数据库,此前在数据库中创建数据库flask
-    db= pymysql.connect(
-    user = 'root',
-    password = 'root',
-    # MySQL的默认端口为3306
-    port = 3306,
-    # 本机地址为127.0.0.1或localhost
-    host = 'localhost',
-    # 指定使用的数据库
-    database = 'geerwheel'
-)
+    # 连接数据库,此前在数据库中创建数据库flask
+    db = pymysql.connect(
+        user='root',
+        password='root',
+        # MySQL的默认端口为3306
+        port=3306,
+        # 本机地址为127.0.0.1或localhost
+        host='localhost',
+        # 指定使用的数据库
+        database='geerwheel'
+    )
 
     print("连接成功")
-    #使用cursor()方法获取操作游标
+    # 使用cursor()方法获取操作游标
     cursor = db.cursor()
 
-    data=request.get_json()
+    data = request.get_json()
     print(data)
 
-    username=data.get('username')
-    password=data.get('password')
-    password2=data.get('password2')
-    truename=data.get('truename')
-    idcardnum=data.get('idcardnum')
+    username = data.get('username')
+    password = data.get('password')
+    password2 = data.get('password2')
+    truename = data.get('truename')
+    idcardnum = data.get('idcardnum')
 
-
-    #判断两次输入密码是否一致，一致则跳转到登录界面，不一致则弹出警告，要求用户重新输入
-    if password==password2:
+    # 判断两次输入密码是否一致，一致则跳转到登录界面，不一致则弹出警告，要求用户重新输入
+    if password == password2:
         # SQL 插入语句
         sql_0 = "INSERT INTO users(username, password,truename,idcardnum) VALUES (%s,%s,%s,%s)"
         sql = sql_0 % (repr(username), repr(password), repr(truename), repr(idcardnum))
@@ -93,7 +94,7 @@ def getRigistRequest():
             db.commit()
             return '注册成功'
         except:
-            #抛出错误信息
+            # 抛出错误信息
             traceback.print_exc()
             # 如果发生错误则回滚
             db.rollback()
@@ -103,12 +104,13 @@ def getRigistRequest():
     else:
         return '注册成功'
 
+
 # 获取登录参数及处理
-@app.route('/login',methods=['GET','POST'])
+@app.route('/login', methods=['GET', 'POST'])
 def getLoginRequest():
     # 查询用户名及密码是否匹配及存在
     # 连接数据库,此前在数据库中创建数据库TESTDB
-    db = pymysql.connect(host="localhost", user="root", password="root", database="geerwheel",charset="utf8")
+    db = pymysql.connect(host="localhost", user="root", password="root", database="geerwheel", charset="utf8")
     # 使用cursor()方法获取操作游标
     cursor = db.cursor()
 
@@ -116,7 +118,7 @@ def getLoginRequest():
     password = request.get_json().get('password')
     # SQL 查询语句
     sql_0 = "select * from users where username= %s and password= %s"
-    sql = sql_0 % (repr(username),repr(password))
+    sql = sql_0 % (repr(username), repr(password))
 
     try:
         # 执行sql语句
@@ -125,7 +127,7 @@ def getLoginRequest():
         # print(len(results))
         print(results)
         if len(results) == 1:
-            return '登录成功'      #返回需要跳转的页面或需要显示的字符串
+            return '登录成功'  # 返回需要跳转的页面或需要显示的字符串
         else:
             return '用户名或密码不正确'
         # 提交到数据库执行
@@ -138,23 +140,24 @@ def getLoginRequest():
     db.close()
 
 
-#分页查询方法
-@app.route('/showDataset',methods=['GET','POST'])
+# 分页查询方法
+@app.route('/showDataset', methods=['GET', 'POST'])
 def showDataset():
     db = pymysql.connect(host="localhost", user="root", password="root", database="geerwheel", charset="utf8")
     # 使用cursor()方法获取操作游标
     cursor = db.cursor()
-    sql="select * from dataset"
+    sql = "select * from dataset"
 
     try:
         # 执行sql语句
         cursor.execute(sql)
         results = cursor.fetchall()
 
-        print('result是',results)
-        list=[]
+        print('result是', results)
+        list = []
         for row in results:
-            dic={'id':row[0],'name':row[1],'region':row[2],'contact':row[3],'description':row[4],'ischoosed':row[5]}
+            dic = {'id': row[0], 'name': row[1], 'region': row[2], 'contact': row[3], 'description': row[4],
+                   'ischoosed': row[5]}
             list.append(dic)
         print(list)
         return jsonify(list)
@@ -168,16 +171,17 @@ def showDataset():
     db.close()
     return
 
-#更改数据集选中状态
-@app.route('/updataDataset',methods=['GET','POST'])
+
+# 更改数据集选中状态
+@app.route('/updataDataset', methods=['GET', 'POST'])
 def updateDataset():
     db = pymysql.connect(host="localhost", user="root", password="root", database="geerwheel", charset="utf8")
-    cur=db.cursor()
-    status=request.get_data(as_text=True)
+    cur = db.cursor()
+    status = request.get_data(as_text=True)
     print('status 如下')
     print(status)
-    if(status=='1'):
-        sql="UPDATE dataset SET ischoosed='否' WHERE id=2"
+    if (status == '1'):
+        sql = "UPDATE dataset SET ischoosed='否' WHERE id=2"
     else:
         sql = "UPDATE dataset SET ischoosed='是' WHERE id=2"
     print(sql)
@@ -187,12 +191,13 @@ def updateDataset():
     db.close()
     return '更改成功'
 
-#添加数据集
-@app.route('/uploadDataset',methods=['GET','POST'])
+
+# 添加数据集
+@app.route('/uploadDataset', methods=['GET', 'POST'])
 def uploadDataset():
     db = pymysql.connect(host="localhost", user="root", password="root", database="geerwheel", charset="utf8")
     cursor = db.cursor()
-    data=request.get_json()
+    data = request.get_json()
     print('data是')
     print(data)
 
@@ -204,7 +209,7 @@ def uploadDataset():
     ischoosed = data.get('ischoosed')
     # SQL 插入语句
     sql_0 = "INSERT INTO dataset(id,name,region,contact,description,ischoosed) VALUES (%s,%s,%s,%s,%s,%s)"
-    sql = sql_0 % (repr(id), repr(name), repr(region),  repr(contact),repr(description),repr(ischoosed))
+    sql = sql_0 % (repr(id), repr(name), repr(region), repr(contact), repr(description), repr(ischoosed))
     try:
         # 执行sql语句
         cursor.execute(sql)
@@ -221,7 +226,7 @@ def uploadDataset():
     db.close()
 
 
-#上传文件
+# 上传文件
 @app.route("/uploadDatafile", methods=['POST'])
 def uploadDatafile():
     # print(data)
@@ -252,8 +257,8 @@ def uploadDatafile():
         }), 400
 
 
-#创建数据集文件夹
-@app.route("/makeDatadir",methods=['GET','POST'])
+# 创建数据集文件夹
+@app.route("/makeDatadir", methods=['GET', 'POST'])
 def makeDatadir():
     data = request.get_json()['name']
     print(data)
@@ -261,53 +266,49 @@ def makeDatadir():
     print(name)
     dir = os.path.dirname(__file__)
     print(dir)
-    if (os.path.exists('{}/static/data/{}'.format(dir,name)))==False:
+    if (os.path.exists('{}/static/data/{}'.format(dir, name))) == False:
         print('根目录不存在，创建根目录')
         os.mkdir('{}/static/data/{}'.format(dir, name))
         global save_path
-        save_path=('{}/static/data/{}'.format(dir,name))
+        save_path = ('{}/static/data/{}'.format(dir, name))
         print(save_path)
         print('创建成功')
         return jsonify({
-                "code": 200,
-                "message": save_path
-            })
+            "code": 200,
+            "message": save_path
+        })
     else:
         return jsonify({
-                "code": 400,
-                "message": "路径已存在"
-            }), 400
+            "code": 400,
+            "message": "路径已存在"
+        }), 400
 
-#调用训练函数
-@app.route("/train",methods=['GET','POST'])
+
+# 调用训练函数
+@app.route("/train", methods=['GET', 'POST'])
 def train():
     data = request.get_json()
     print(data)
-    num_classes= request.get_json()['num_classes']
+    num_classes = request.get_json()['num_classes']
     print(num_classes)
 
     from BackEnd.Algorithm.BackEnd.Algorithm import sign_cnn
-    sign_cnn.num_classes =num_classes
+    sign_cnn.num_classes = num_classes
+    sign_cnn.epochs=request.get_json()['epochs']
+    sign_cnn.train = request.get_json()['train']
+    sign_cnn.valid = request.get_json()['valid']
+    sign_cnn.test = request.get_json()['test']
+    sign_cnn.run_Algorithm()
 
-    # path="./Algorithm/BackEnd/Algorithm/sign_cnn.py"
-    # # 读取B脚本内容
-    # with open(path, "r",encoding='utf-8') as f:
-    #     content = f.read()
-    # # 修改B脚本内容
-    # content = content.replace("num_classes = 10", f"num_classes = {num_classes}")
-    # # 将修改后的内容写回B脚本
-    # with open(path, "w") as f:
-    #     f.write(content)
 
-    # sign_cnn.num_classes=
+
     return jsonify({
         "code": 200,
         "message": "成功"
     })
 
 
-
 # 启动运行
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=5001)  # 这样子会直接运行在本地服务器，也即是 localhost:5000
-   # app.run(host='your_ip_address') # 这里可通过 host 指定在公网IP上运行
+# app.run(host='your_ip_address') # 这里可通过 host 指定在公网IP上运行
