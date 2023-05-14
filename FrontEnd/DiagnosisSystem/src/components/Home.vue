@@ -27,12 +27,16 @@
 
 
           <el-menu-item index="/train">
-        <i class="el-icon-cpu"></i>
-        <span slot="title">训练模型</span>
-      </el-menu-item>
+            <i class="el-icon-cpu"></i>
+            <span slot="title">训练模型</span>
+          </el-menu-item>
 
+          <el-menu-item index="/result">
+            <i class="el-icon-cpu"></i>
+            <span slot="title">查看结果</span>
+          </el-menu-item>
 
-             <el-menu-item :index=String(3)>
+             <el-menu-item index="/compare">
         <i class="el-icon-document"></i>
         <span slot="title">不同模型比较</span>
       </el-menu-item>

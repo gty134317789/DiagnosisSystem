@@ -1,6 +1,14 @@
 <template>
     <div style="margin-top: 60px;margin-left:80px;width: 600px" >
         <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px" >
+
+            <el-form-item>
+              <el-radio-group v-model="ruleForm.model">
+                  <el-radio-button label="CNN"></el-radio-button>
+                  <el-radio-button label="INCEPTION"></el-radio-button>
+                  </el-radio-group>
+            </el-form-item>
+
             <el-form-item label="样本类别数量" prop="num_classes">
                 <el-input v-model.number="ruleForm.num_classes"></el-input>
             </el-form-item>
@@ -14,15 +22,15 @@
             </el-form-item>
 
             <el-form-item label="训练集比例" prop="train">
-                <el-input-number v-model.number="ruleForm.train" :precision="2" :step="0.01" :max="1" :min="0"></el-input-number>
+                <el-input-number v-model.number="ruleForm.train" :precision="2" :step="0.01"  precision="2" :max="1" :min="0"></el-input-number>
             </el-form-item>
 
            <el-form-item label="验证集比例" prop="valid">
-                <el-input-number v-model.number="ruleForm.valid" :precision="2" :step="0.01" :max="1" :min="0"></el-input-number>
+                <el-input-number v-model.number="ruleForm.valid" :precision="2" :step="0.01" precision="2" :max="1" :min="0"></el-input-number>
            </el-form-item>
 
           <el-form-item label="测试集比例" prop="test">
-                <el-input-number v-model.number="ruleForm.test" :precision="2" :step="0.01" :max="1" :min="0"></el-input-number>
+                <el-input-number v-model.number="ruleForm.test" :precision="2" :step="0.01"  precision="2" :max="1" :min="0"></el-input-number>
           </el-form-item>
 
           <el-form-item>
@@ -111,8 +119,10 @@ const train = 'http://127.0.0.1:5001/train';
                     train: '',
                     valid:'',
                     test:'',
-                    check:true
+                    check:true,
+                    model: 'CNN',
                 },
+
               rules:{
                 num_classes:[
                    { required: true, message: '样本类别数量不能为空'},
@@ -136,7 +146,7 @@ const train = 'http://127.0.0.1:5001/train';
                   { required: true, message: '测试集比例不能为空'},
                 ],
 
-              }
+              },
             };
         },
         methods: {
@@ -149,7 +159,7 @@ const train = 'http://127.0.0.1:5001/train';
                   that.$alert('操作成功', '', {
                                     confirmButtonText: '确定',
                                     callback: action => {
-
+                                            that.$router.push('/result')
                                     }
                   });}
               })
@@ -161,7 +171,11 @@ const train = 'http://127.0.0.1:5001/train';
             },
             checkForm(formName){
               const that=this;
-              if(that.ruleForm.train+that.ruleForm.valid+that.ruleForm.test==1){
+              console.log(that.ruleForm.train)
+              console.log(that.ruleForm.valid)
+              console.log(that.ruleForm.test)
+
+              if(that.ruleForm.train+that.ruleForm.valid+that.ruleForm.test===1){
                 that.$alert('数据无误可提交', '', {
                                     confirmButtonText: '确定',
                                     callback: action => {this.ruleForm.check=false}

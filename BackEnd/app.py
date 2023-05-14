@@ -289,23 +289,51 @@ def makeDatadir():
 def train():
     data = request.get_json()
     print(data)
-    num_classes = request.get_json()['num_classes']
-    print(num_classes)
 
     from BackEnd.Algorithm.BackEnd.Algorithm import sign_cnn
-    sign_cnn.num_classes = num_classes
-    sign_cnn.epochs=request.get_json()['epochs']
-    sign_cnn.train = request.get_json()['train']
-    sign_cnn.valid = request.get_json()['valid']
-    sign_cnn.test = request.get_json()['test']
-    sign_cnn.run_Algorithm()
+    from BackEnd.Algorithm.BackEnd.Algorithm import sign_inception
 
 
+    model=request.get_json()['model']
+
+    import sys
+    f = open('Algorithm/BackEnd/Algorithm/save_logs/{}.log'.format(model), 'a',encoding='utf-8')
+    sys.stdout = f  # 保存print输出
+    sys.stderr = f  # 保存异常或错误信息
+    if model=='CNN':
+        sign_cnn.run_Algorithm()
+        sign_cnn.num_classes = request.get_json()['num_classes']
+        sign_cnn.epochs = request.get_json()['epochs']
+        sign_cnn.train = request.get_json()['train']
+        sign_cnn.valid = request.get_json()['valid']
+        sign_cnn.test = request.get_json()['test']
+    elif model=='INCEPTION':
+        sign_inception.num_classes = request.get_json()['num_classes']
+        sign_inception.epochs = request.get_json()['epochs']
+        sign_inception.train = request.get_json()['train']
+        sign_inception.valid = request.get_json()['valid']
+        sign_inception.test = request.get_json()['test']
+        sign_inception.run_Algorithm()
 
     return jsonify({
         "code": 200,
         "message": "成功"
     })
+
+#查看训练日志
+@app.route('/result', methods=['POST','GET'])
+def read_file():
+    file_path = 'E:\DiagnosisSystem\BackEnd\Algorithm\BackEnd\Algorithm\save_logs'
+    model = request.get_json()['model']
+    file_path=file_path+('\{}.log'.format(model))
+    print(file_path)
+    try:
+        with open(file_path, 'r', encoding='utf-8') as file:
+            content = file.read()
+            print(content)
+        return jsonify({'content': content, 'status': 'success'})
+    except Exception as e:
+        return jsonify({'error': str(e), 'status': 'error'})
 
 
 # 启动运行

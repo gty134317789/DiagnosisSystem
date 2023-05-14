@@ -135,8 +135,8 @@ def start_tsne():
     plt.figure(figsize=(10, 10))
     plt.scatter(X_tsne[:, 0], X_tsne[:, 1], c=y_train)
     plt.colorbar()
-    # plt.savefig("./save_picture/sample.png",dpi=600)
-    plt.savefig("../BackEnd/Algorithm/BackEnd/Algorithm/save_picture/sample.png",dpi=600)
+    # plt.savefig("../BackEnd/Algorithm/BackEnd/Algorithm/save_picture/CNN_sample.png",dpi=600)
+    plt.savefig("../FrontEnd/DiagnosisSystem/src/assets/CNN_sample.png", dpi=600)
     plt.show()
 
 
@@ -144,8 +144,18 @@ def start_tsne():
 
 # 模型定义
 def mymodel():
+    # padding——边缘填充
+    # pooling——最大池化层通常用于对数据进行降采样，去除冗余信息、对特征进行压缩
+    # flatten——展平层将输入中的每个批次展平为一维
+    # Dropout——按照一定频率,随机地将输入的中的一些节点数值设置为0,可以防止过拟合
+    # Dense——全连接层用于将一个特征空间线性变化到另一个特征空间，在整个神经网络中起到分类器的作用
+    # filters——滤波器数目
+    # kernal_size——算子尺寸
+    # strides——步长
     inputs = keras.Input(shape=(x_train.shape[1], x_train.shape[2]))
-    h1 = layers.Conv1D(filters=8, kernel_size=3, strides=1, padding='same', activation='relu')(inputs)
+    print("x_train.shape[1], x_train.shape[2]:")
+    print(x_train.shape[1],x_train.shape[2])
+    h1 = layers.Conv1D(filters=8, kernel_size=5, strides=1, padding='same', activation='relu')(inputs)
     h1 = layers.MaxPool1D(pool_size=2, strides=2, padding='same')(h1)
 
     h1 = layers.Conv1D(filters=16, kernel_size=3, strides=1, padding='same', activation='relu')(h1)
@@ -160,7 +170,7 @@ def mymodel():
     deep_model = keras.Model(inputs, h1, name="cnn")
     return deep_model
 
-
+# 模型训练
 def modeltrain():
     global model
     model = mymodel()
@@ -271,7 +281,8 @@ def new_start_tsne():
     plt.tick_params(labelsize=18)
     plt.legend()
     # plt.savefig("./save_picture/result.png", dpi=600)
-    plt.savefig("../BackEnd/Algorithm/BackEnd/Algorithm/save_picture/result.png", dpi=600)
+    # plt.savefig("../BackEnd/Algorithm/BackEnd/Algorithm/save_picture/CNN_result.png", dpi=600)
+    plt.savefig("../FrontEnd/DiagnosisSystem/src/assets/CNN_result.png", dpi=600)
     plt.show()
 
 
@@ -284,4 +295,4 @@ def run_Algorithm():
     confusion()
     new_start_tsne()
 
-
+# run_Algorithm()
