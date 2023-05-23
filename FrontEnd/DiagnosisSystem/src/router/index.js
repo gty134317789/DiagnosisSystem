@@ -9,6 +9,7 @@ import uploadData from "../components/UploadData.vue";
 import train from "../components/Train.vue";
 import result from "../components/Result.vue";
 import compare from "../components/Compare.vue";
+import help from  "../components/Help.vue"
 
 
 
@@ -23,6 +24,7 @@ export default new Router({
         {path:'/train',name:'训练模型',component:train},
         {path:'/result',name:'结果查看',component:result},
         {path:'/compare',name:'模型比较',component:compare},
+        {path:'/help',name:'帮助',component:help},
       ]
     },
     {path:'/login', name:'login', component:login},

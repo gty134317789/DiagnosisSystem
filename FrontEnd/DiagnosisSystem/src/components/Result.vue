@@ -26,7 +26,6 @@
     </el-col>
     <el-col :span="12">
       <el-button type="primary" @click="showImages">展示图片</el-button>
-
            <el-image
             v-for="(image, index) in images"
             :key="index"
@@ -71,21 +70,29 @@ export default {
        try {
          var image1='';
         var image2='';
+        var image3='';
+        var image4='';
         console.log('点击')
          if(this.model=='CNN'){
            // 使用require方法加载图片
            image1 = require('@/assets/CNN_sample.png');
            image2 = require('@/assets/CNN_result.png');
+           image3 = require('@/assets/CNN_accuracy.png');
+           image4 = require('@/assets/CNN_loss.png');
          }
         else{
           image1 = require('@/assets/INCEPTION_sample.png');
           image2 = require('@/assets/INCEPTION_result.png');
+          image3 = require('@/assets/INCEPTION_accuracy.png');
+          image4 = require('@/assets/INCEPTION_loss.png');
          }
         console.log(image1)
 
         // 将图片路径添加到images数组中
         this.images.push(image1);
         this.images.push(image2);
+        this.images.push(image3);
+        this.images.push(image4);
         console.log(this.images)
            } catch (error) {
         this.$message.error('请求失败，请检查网络连接')

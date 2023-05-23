@@ -92,9 +92,9 @@ def main_Algoithm():
     print(x_valid.shape)
     print('x_test的shape是：')
     print(x_test.shape)
-    print('y_train是：' + str(y_train))
-    print('y_valid是：' + str(y_valid))
-    print('y_test是：' + str(y_test))
+    # print('y_train是：' + str(y_train))
+    # print('y_valid是：' + str(y_valid))
+    # print('y_test是：' + str(y_test))
     print("x_train的最大值和最小值：", x_train.max(), x_train.min())
     print("x_test的最大值和最小值：", x_test.max(), x_test.min())
 
@@ -219,7 +219,7 @@ def acc_line():
     plt.xlabel("Epochs")
     plt.ylabel("Accuracy")
     plt.legend(["Accuracy", "Validation Accuracy"])
-
+    plt.savefig("../FrontEnd/DiagnosisSystem/src/assets/INCEPTION_accuracy.png", dpi=600)
     plt.figure()
 
     # 画loss曲线
@@ -229,6 +229,7 @@ def acc_line():
     plt.xlabel("Epochs")
     plt.ylabel("Loss")
     plt.legend(["Loss", "Validation Loss"])
+    plt.savefig("../FrontEnd/DiagnosisSystem/src/assets/INCEPTION_accuracy.png", dpi=600)
     # plt.figure()
     plt.show()
 

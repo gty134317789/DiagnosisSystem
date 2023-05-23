@@ -22,6 +22,7 @@ def prepro(d_path, length=0, number=0, normal=True, rate=[0, 0, 0], enc=False, e
                     files[i] = file[key].ravel()
         return files
 
+    #设置切片率
     def slice_enc(data, slice_rate=rate[1] + rate[2]):
         keys = data.keys()
         Train_Samples = {}

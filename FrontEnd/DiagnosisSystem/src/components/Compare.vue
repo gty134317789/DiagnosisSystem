@@ -16,7 +16,7 @@
         <!-- 田字格布局 -->
         <el-col :span="12"  >
           <div class="grid-content bg-purple" >
-            <h1>Inception深度卷积神经网络</h1>
+            <h1>CNN一维卷积神经网络</h1>
           </div>
             <el-image :src="require('@/assets/compare/CNN_result.png')" :fit="fit" :preview-src-list="images" style="margin-bottom: 20px; width: 384px; height: 384px;"></el-image>
              <el-image :src="require('@/assets/compare/CNN_loss.png')" :fit="fit" :preview-src-list="images" style="margin-bottom: 20px; width: 384px; height: 288px;"></el-image>
@@ -25,12 +25,12 @@
         </el-col>
         <el-col :span="12">
           <div class="grid-content bg-purple" >
-            <h1>GRU深度循环神经网络</h1>
+            <h1>Inception深度循环神经网络</h1>
           </div>
-            <el-image :src="require('@/assets/compare/GRU_result.png')" :fit="fit" :preview-src-list="images" style="margin-bottom: 20px; width: 384px; height: 384px;"></el-image>
-             <el-image :src="require('@/assets/compare/GRU_loss.png')" :fit="fit" :preview-src-list="images" style="margin-bottom: 20px; width: 384px; height: 288px;"></el-image>
-            <el-image :src="require('@/assets/compare/GRU_accuracy.png')" :fit="fit" :preview-src-list="images" style="margin-bottom: 20px; width: 384px; height: 288px;"></el-image>
-            <el-image :src="require('@/assets/compare/GRU_confusion.png')" :fit="fit" :preview-src-list="images" style="margin-bottom: 20px; width: 384px; height: 288px;"></el-image>
+            <el-image :src="require('@/assets/compare/Inception_result.png')" :fit="fit" :preview-src-list="images" style="margin-bottom: 20px; width: 384px; height: 384px;"></el-image>
+             <el-image :src="require('@/assets/compare/Inception_loss.png')" :fit="fit" :preview-src-list="images" style="margin-bottom: 20px; width: 384px; height: 288px;"></el-image>
+            <el-image :src="require('@/assets/compare/Inception_accuracy.png')" :fit="fit" :preview-src-list="images" style="margin-bottom: 20px; width: 384px; height: 288px;"></el-image>
+            <el-image :src="require('@/assets/compare/Inception_confusion.png')" :fit="fit" :preview-src-list="images" style="margin-bottom: 20px; width: 384px; height: 288px;"></el-image>
         </el-col>
       </el-row>
       <el-row>

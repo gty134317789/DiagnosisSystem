@@ -140,7 +140,7 @@ def getLoginRequest():
     db.close()
 
 
-# 分页查询方法
+# 展示数据集
 @app.route('/showDataset', methods=['GET', 'POST'])
 def showDataset():
     db = pymysql.connect(host="localhost", user="root", password="root", database="geerwheel", charset="utf8")
@@ -326,11 +326,9 @@ def read_file():
     file_path = 'E:\DiagnosisSystem\BackEnd\Algorithm\BackEnd\Algorithm\save_logs'
     model = request.get_json()['model']
     file_path=file_path+('\{}.log'.format(model))
-    print(file_path)
     try:
         with open(file_path, 'r', encoding='utf-8') as file:
             content = file.read()
-            print(content)
         return jsonify({'content': content, 'status': 'success'})
     except Exception as e:
         return jsonify({'error': str(e), 'status': 'error'})

@@ -47,12 +47,6 @@
             </div>
           </el-menu-item>
 
-          <el-menu-item index="/print">
-            <div style="position: relative;left: 20px;">
-              <i class="el-icon-printer"></i>打印
-            </div>
-          </el-menu-item>
-
             <el-menu-item index="/login">
               <div style="position: relative;left: 20px;">
                 <i class="el-icon-switch-button"></i>退出登录
@@ -67,8 +61,10 @@
       <el-container>
         <el-main>
           <el-breadcrumb separator-class="el-icon-arrow-right">
-            <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+            <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
             <el-breadcrumb-item v-text="this.$router.currentRoute.name"></el-breadcrumb-item>
+            <el-image :src="require('@/assets/HomeHelp.png')" :fit="fit" :preview-src-list="images" style="margin-bottom: 20px; "></el-image>
+            <h1>系统使用流程</h1>
           </el-breadcrumb>
           <router-view></router-view>
         </el-main>
